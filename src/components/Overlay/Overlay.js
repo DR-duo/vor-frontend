@@ -8,15 +8,9 @@ export default class Overlay extends React.Component {
     super();
     this.state = {
       finishedLoading: false,
-      lastClick: {
-        x: null,
-        y: null
-      },
-      windowSize: {
-        x: 0,
-        y: 0
-      }
+      cards: null
     };
+
     this.api = new RuneterraAdapter();
   }
 
@@ -27,20 +21,18 @@ export default class Overlay extends React.Component {
   handleClick(event) {
     const x = event.clientX;
     const y = event.clientY;
-
-    this.setState(
-      {
-        windowSize: {
-          x: document.getElementById("vor-overlay").clientWidth,
-          y: document.getElementById("vor-overlay").clientHeight
-        }
-      },
-      () => {
-        this.api.getCardAtCord(x, y).then(card => {
-          console.log(card);
-        });
-      }
+    this.api.updateScreenSize(
+      document.getElementById("vor-overlay").clientWidth,
+      document.getElementById("vor-overlay").clientHeight
     );
+    this.api.getCardAtCord(x, y).then(card => {
+      window.Twitch.ext.rig.log(card);
+    });
+    this.api.getAllCards().then(cards => {
+      this.setState({ cards }, () => {
+        console.log(this.state);
+      });
+    });
   }
 
   render() {
@@ -49,11 +41,26 @@ export default class Overlay extends React.Component {
         <div
           id="vor-overlay"
           ref={el => (this.container = el)}
-          style={{ height: "100%", width: "100%" }}
+          style={{ height: "100%", width: "100%", position: "relative" }}
           onClick={event => this.handleClick(event)}
         >
-          Window Size X: {this.state.windowSize.x}
-          Window Size Y: {this.state.windowSize.y}
+          {this.state.cards &&
+            this.state.cards.map((card, index) => {
+              return (
+                <div
+                  style={{
+                    backgroundColor: "red",
+                    height: card.Height,
+                    width: card.Width,
+                    position: "absolute",
+                    top: card.TopLeftY,
+                    left: card.TopLeftX
+                  }}
+                >
+                  {`${card.CardCode}-${index}`}
+                </div>
+              );
+            })}
         </div>
       );
     } else {
