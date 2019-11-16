@@ -19,7 +19,7 @@ export default class Overlay extends React.Component {
         document.getElementById("vor-overlay").clientWidth,
         document.getElementById("vor-overlay").clientHeight
       );
-    }, 0);
+    }, 100);
     this.poller = setInterval(() => this.updateCards(), 1000);
   }
 
