@@ -9,28 +9,32 @@ export default class Overlay extends React.Component {
     this.state = {
       cards: null
     };
-
+    this.poll = null;
     this.api = new RuneterraAdapter();
   }
 
   componentDidMount() {
-    this.setState({ finishedLoading: true });
+    setTimeout(() => {
+      this.api.updateScreenSize(
+        document.getElementById("vor-overlay").clientWidth,
+        document.getElementById("vor-overlay").clientHeight
+      );
+    }, 0);
+    this.poller = setInterval(() => this.updateCards(), 1000);
+  }
+
+  updateCards() {
+    this.api.getAllCards().then(cards => {
+      this.setState({ cards });
+    });
   }
 
   handleClick(event) {
     const x = event.clientX;
     const y = event.clientY;
-    this.api.updateScreenSize(
-      document.getElementById("vor-overlay").clientWidth,
-      document.getElementById("vor-overlay").clientHeight
-    );
+
     this.api.getCardAtCord(x, y).then(card => {
       window.Twitch.ext.rig.log(card);
-    });
-    this.api.getAllCards().then(cards => {
-      this.setState({ cards }, () => {
-        console.log(this.state);
-      });
     });
   }
 
@@ -46,6 +50,7 @@ export default class Overlay extends React.Component {
           this.state.cards.map((card, index) => {
             return (
               <div
+                key={`card-${index}`}
                 style={{
                   backgroundColor: "red",
                   height: card.Height,
