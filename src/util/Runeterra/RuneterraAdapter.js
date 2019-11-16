@@ -38,14 +38,6 @@ export default class RuneterraAdapter {
           const bottom = TopLeftY - Height;
           const gameX = x * ratioX;
           const gameY = -(y * ratioY - data.Screen.ScreenHeight);
-          /*           window.Twitch.ext.rig.log(
-            `clicked (x,y) at (${x},${y}). 
-            ratio at (${ratioX},${ratioY})
-            game (x,y) at (${gameX},${gameY})
-            cardcode ${CardCode}
-            boundaries (lrtb) ${left}, ${right}, ${top}, ${bottom}
-            `
-          ); */
 
           if (
             gameX >= left &&
@@ -80,22 +72,6 @@ export default class RuneterraAdapter {
       })
     );
   }
-
-  /**
-   * Coverts coordinates from screen to game
-   * @param number width - width of screen
-   * @param number height - height of screen
-   */
-  /*   getScreenGameRatio(width, height) {
-    return this.api.endpointPositionalRectangles().then(data => {
-      const gameScreenWidth = data.Screen.ScreenWidth;
-      const gameScreenHeight = data.Screen.ScreenHeight;
-      return {
-        x: width / gameScreenWidth,
-        y: height / gameScreenHeight
-      };
-    });
-  } */
 
   /**
    * Sets screen size
